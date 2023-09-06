@@ -29,7 +29,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentUser, user }) => {
             justify-between
             gap-3
             md:gap-0
-          "
+ "
           >
             <Logo />
             <Search />
