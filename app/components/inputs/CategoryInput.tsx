@@ -19,7 +19,6 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
     <div
       onClick={() => onClick(label)}
       className={`
-        
         border-2
         p-4
         flex
@@ -27,7 +26,7 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
         gap-3
         transition
         cursor-pointer
-        ${selected ? "bg-[#d8b67d]" : ""}
+        ${selected ? "shadow-thin" : ""}
       `}
     >
       <Icon size={30} />
