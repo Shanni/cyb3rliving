@@ -8,16 +8,19 @@ module.exports = {
   theme: {
     extend: {
       borderColor: {
-        DEFAULT: "red",
+        DEFAULT: "black",
       },
       colors: {
         primary: {
-          light: "hsl(var(--primary-light) / <alpha-value>)",
+          light: "hsl(var(--primary-light) / 30)",
           DEFAULT: "#f2f757",
           dark: "#f2f757",
+          muted: "",
+          highlight: ""
         },
         secondary: "#5757f7",
         neutral: "#b2b2eb",
+
       },
     },
   },

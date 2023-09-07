@@ -8,9 +8,9 @@ body,
   height: 100%;
 }
 
-html {
+/* html {
   @apply text-gray-700;
-}
+} */
 
 @layer base {
   :root {
@@ -18,8 +18,9 @@ html {
     --gray: 99, 99, 99;
 
     /* For hsl(198deg 93% 60% / <alpha-value>) */
-    --primary-muted: 198deg, 73%, 77%;
-    --primary-light: 198deg 93% 60%;
+    --primary-highlight: 239, 100%, 61%;
+    --primary-muted: 239, 35%, 68%;
+    --primary-light: 227, 100%, 92%;
 
     /* For rgba(255, 115, 179, <alpha-value>) */
     --gray: 255, 115, 179;
