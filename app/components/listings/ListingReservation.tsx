@@ -27,7 +27,7 @@ const ListingReservation: React.FC<ListingReservationProps> = ({
   return (
     <div
       className="
-      bg-white 
+      bg-primary-light 
         rounded-xl 
         border-[1px]
       border-neutral-200 

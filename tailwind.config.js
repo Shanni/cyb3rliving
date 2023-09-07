@@ -6,10 +6,19 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    colors: {
-      primary: "#f2f757",
-      secondary: "#5757f7",
-      neutral: "#b2b2eb",
+    extend: {
+      borderColor: {
+        DEFAULT: "red",
+      },
+      colors: {
+        primary: {
+          light: "hsl(var(--primary-light) / <alpha-value>)",
+          DEFAULT: "#f2f757",
+          dark: "#f2f757",
+        },
+        secondary: "#5757f7",
+        neutral: "#b2b2eb",
+      },
     },
   },
   plugins: [],

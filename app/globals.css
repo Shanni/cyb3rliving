@@ -8,6 +8,24 @@ body,
   height: 100%;
 }
 
+html {
+  @apply text-gray-700;
+}
+
+@layer base {
+  :root {
+    /* For rgb(255 115 179 / <alpha-value>) */
+    --gray: 99, 99, 99;
+
+    /* For hsl(198deg 93% 60% / <alpha-value>) */
+    --primary-muted: 198deg, 73%, 77%;
+    --primary-light: 198deg 93% 60%;
+
+    /* For rgba(255, 115, 179, <alpha-value>) */
+    --gray: 255, 115, 179;
+  }
+}
+
 .leaflet-bottom,
 .leaflet-control,
 .leaflet-pane,
@@ -22,4 +40,9 @@ body,
 .rdrCalendarWrapper {
   font-size: 16px !important;
   width: 100% !important;
+  background-color: hsl(var(--primary-light)) !important;
+}
+
+.rdrDayDisabled {
+  background-color: hsl(var(--primary-muted)) !important;
 }

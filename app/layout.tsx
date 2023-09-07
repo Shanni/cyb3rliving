@@ -37,7 +37,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={font.className}>
+      <body className={`bg-primary-light/20 ${font.className}`}>
         <ClientOnly>
           <ToasterProvider />
           <LoginModal />
