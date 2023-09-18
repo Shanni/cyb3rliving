@@ -6,7 +6,6 @@ import { signIn } from "next-auth/react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
-import * as fcl from "@onflow/fcl";
 
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useLoginModal from "@/app/hooks/useLoginModal";
@@ -16,6 +15,7 @@ import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
 import { useWeb3Modal } from "@web3modal/react";
+import walletConnectSvg from "../custom_svg/walletConnectSvg";
 
 const LoginModal = () => {
   const router = useRouter();
@@ -95,8 +95,8 @@ const LoginModal = () => {
       />
       <Button
         outline
-        label="Continue with Flow Wallet"
-        icon={FcGoogle}
+        label="Continue with WalletConnect"
+        icon={walletConnectSvg}
         onClick={() => {
           open();
         }}
