@@ -21,9 +21,17 @@ model User {
   updatedAt      DateTime  @updatedAt
   favoriteIds    String[]  @db.ObjectId
 
+  web3wallet   Wallet?
+
   accounts     Account[]
   listings     Listing[]
   reservations Reservation[]
+}
+
+model Wallet{
+  web3address String @id @default(auto()) @map("_id") @db.ObjectId
+  User        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String @db.ObjectId @unique
 }
 
 model Account {
