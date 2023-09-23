@@ -124,7 +124,7 @@ const RegisterModal = () => {
       />
       <Button
         outline
-        label="Continue with Flow"
+        label="Continue with Wallet Connect"
         icon={AiFillGithub}
         onClick={() => {
           open();

@@ -95,7 +95,7 @@ const LoginModal = () => {
       />
       <Button
         outline
-        label="Continue with Flow Wallet"
+        label="Continue with Wallet Connect"
         icon={FcGoogle}
         onClick={() => {
           open();
