@@ -7,7 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import * as fcl from "@onflow/fcl";
+import walletConnectSvg from "../custom_svg/walletConnectSvg";
 
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
@@ -17,30 +17,11 @@ import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
 import { useWeb3Modal } from "@web3modal/react";
+import Image from "next/image";
 
 const RegisterModal = () => {
   const [user, setUser] = useState({ loggedIn: null, addr: null });
   const { open, close } = useWeb3Modal();
-
-  useEffect(() => fcl.currentUser.subscribe(setUser) as any, []);
-
-  const AuthedState = () => {
-    return (
-      <div>
-        <div>Address: {user?.addr ?? "No Address"}</div>
-        <button onClick={fcl.unauthenticate}>Log Out</button>
-      </div>
-    );
-  };
-
-  const UnauthenticatedState = () => {
-    return (
-      <div>
-        <button onClick={fcl.logIn}>Log In</button>
-        <button onClick={fcl.signUp}>Sign Up</button>
-      </div>
-    );
-  };
 
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
@@ -124,8 +105,8 @@ const RegisterModal = () => {
       />
       <Button
         outline
-        label="Continue with Wallet Connect"
-        icon={AiFillGithub}
+        label="Continue with WalletConnect"
+        icon={walletConnectSvg}
         onClick={() => {
           open();
         }}
