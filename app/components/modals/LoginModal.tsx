@@ -40,6 +40,9 @@ const LoginModal = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
+    console.log("data: ", data);
+    console.log({ ...data });
+
     signIn("credentials", {
       ...data,
       redirect: false,
@@ -57,6 +60,27 @@ const LoginModal = () => {
       }
     });
   };
+
+  const onWeb3Connect = useCallback(() => {
+    setIsLoading(true);
+
+    signIn("web3wallet", {
+      walletAddress: address,
+      redirect: false,
+    }).then((callback) => {
+      setIsLoading(false);
+
+      if (callback?.ok) {
+        toast.success("Logged in");
+        router.refresh();
+        loginModal.onClose();
+      }
+
+      if (callback?.error) {
+        toast.error(callback.error);
+      }
+    });
+  }, [address, loginModal, router]);
 
   const onToggle = useCallback(() => {
     loginModal.onClose();
@@ -100,7 +124,19 @@ const LoginModal = () => {
         label="Continue with WalletConnect"
         icon={walletConnectSvg}
         onClick={() => {
-          open();
+          open().then(() => {
+            if (isConnecting) {
+              toast.loading("Connecting to wallet");
+            }
+
+            if (isDisconnected) {
+              toast.error("Disconnected from wallet");
+            }
+
+            if (address) {
+              onWeb3Connect();
+            }
+          });
         }}
       />
       <div
@@ -137,7 +173,6 @@ const LoginModal = () => {
         body={bodyContent}
         footer={footerContent}
       />
-      {address ? address : ""}
     </>
   );
 };

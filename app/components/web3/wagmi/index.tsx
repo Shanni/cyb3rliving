@@ -1,4 +1,5 @@
 "use client";
+
 import {
   EthereumClient,
   w3mConnectors,
@@ -13,9 +14,10 @@ export default function Wagmi({ children }: { children: React.ReactNode }) {
   const projectId = wagmiProjectId;
 
   if (!projectId) {
-    console.log("projectId:", projectId);
+    console.log("projectId: ", projectId);
     throw new Error("projectId is required");
   }
+
   const { publicClient } = configureChains(chains, [
     w3mProvider({ projectId }),
   ]);
