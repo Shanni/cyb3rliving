@@ -40,9 +40,6 @@ const LoginModal = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
-    console.log("data: ", data);
-    console.log({ ...data });
-
     signIn("credentials", {
       ...data,
       redirect: false,
@@ -61,12 +58,11 @@ const LoginModal = () => {
     });
   };
 
-  const onWeb3Connect = useCallback(() => {
+  const onWeb3Connect = () => {
     setIsLoading(true);
 
     signIn("web3wallet", {
       walletAddress: address,
-      redirect: false,
     }).then((callback) => {
       setIsLoading(false);
 
@@ -74,13 +70,14 @@ const LoginModal = () => {
         toast.success("Logged in");
         router.refresh();
         loginModal.onClose();
+        console.log("login modal: " + loginModal);
       }
 
       if (callback?.error) {
         toast.error(callback.error);
       }
     });
-  }, [address, loginModal, router]);
+  };
 
   const onToggle = useCallback(() => {
     loginModal.onClose();

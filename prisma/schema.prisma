@@ -29,7 +29,8 @@ model User {
 }
 
 model Wallet{
-  web3address String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  web3address String @unique
   User        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String @db.ObjectId @unique
 }

@@ -20,6 +20,7 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
     CredentialsProvider({
+      id: "email",
       name: "credentials",
       credentials: {
         email: { label: "email", type: "text" },
@@ -40,8 +41,6 @@ export const authOptions: AuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        console.log(user.hashedPassword);
-
         const isCorrectPassword = await bcrypt.compare(
           credentials.password,
           user.hashedPassword
@@ -55,6 +54,7 @@ export const authOptions: AuthOptions = {
       },
     }),
     CredentialsProvider({
+      id: "web3wallet",
       name: "web3wallet",
       credentials: {
         walletAddress: { label: "walletAddress", type: "text" },
@@ -73,9 +73,7 @@ export const authOptions: AuthOptions = {
         if (!wallet) {
           //create new user
           const newUser = await prisma.user.create({
-            data: {
-              id: credentials.walletAddress,
-            },
+            data: {},
           });
 
           //create wallet
