@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import Button from "../Button";
 import { useAccount, WagmiConfig } from "wagmi";
 import { useWeb3Modal } from "@web3modal/react";
 import walletConnectSvg from "../custom_svg/walletConnectSvg";
+import getCurrentUser, { getSession } from "@/app/actions/getCurrentUser";
 
 const LoginModal = () => {
   const router = useRouter();
@@ -63,14 +64,15 @@ const LoginModal = () => {
 
     signIn("web3wallet", {
       walletAddress: address,
+      redirect: false,
     }).then((callback) => {
       setIsLoading(false);
 
       if (callback?.ok) {
         toast.success("Logged in");
+
         router.refresh();
         loginModal.onClose();
-        console.log("login modal: " + loginModal);
       }
 
       if (callback?.error) {
