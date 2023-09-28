@@ -1,16 +1,13 @@
 "use client";
 
 import Calendar from "../inputs/Calendar";
-import { createOrder } from "@/app/libs/paypal/createOrder";
-import { useState } from "react";
-import axios from "axios";
 import { differenceInDays } from "date-fns";
 import { SafeListing, SafeUser } from "@/app/types";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { onApproveOrder } from "@/app/libs/paypal/onApproveOrder";
-import PaymentButtons from "./paymentButtons/PaymentButtons";
-import { Range } from "react-date-range";
+import Button from "../Button";
+import { usePaymentStore } from "@/app/stores/payment";
+import axios from "axios";
 
 interface ListingReservationProps {
   listing: SafeListing & {
@@ -19,59 +16,41 @@ interface ListingReservationProps {
   disabledDates: Date[];
 }
 
-const initialDateRange = {
-  startDate: new Date(),
-  endDate: new Date(),
-  key: "selection",
-};
-
-const getInitialDateRange = () => {
-  return initialDateRange;
-};
-
 const ListingReservation: React.FC<ListingReservationProps> = ({
   listing,
   disabledDates,
 }) => {
   const router = useRouter();
-  const [dateRange, setDateRange] = useState<Range>(getInitialDateRange);
+  const dateRange = usePaymentStore((store) => store.dateRange);
+  const setListing = usePaymentStore((store) => store.setListing);
+  const setDateRange = usePaymentStore((store) => store.setDateRange);
 
   const dayCount =
     dateRange.endDate && dateRange.startDate
-      ? differenceInDays(dateRange.endDate, dateRange.startDate) || 1
+      ? differenceInDays(dateRange.endDate, dateRange.startDate)
       : 1;
 
   const totalPrice = dayCount * listing.price;
 
-  const createReservation = () => {
+  const goToPayment = () => {
+    if (dayCount < 1) {
+      toast.error("You must select at least one day.");
+      return;
+    }
     axios
       .post("/api/reservations", {
-        totalPrice,
+        listingId: listing.id,
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
-        listingId: listing?.id,
       })
-      .then(() => {
-        toast.success("Listing reserved!");
-        setDateRange(initialDateRange);
-        router.push("/trips");
+      .then((res) => {
+        setListing(listing);
+        router.push(`/listings/${res.data.id}/payment`);
       })
-      .catch(() => {
-        toast.error("Something went wrong.");
+      .catch((err) => {
+        console.log(err);
+        // toast.error(err.response.data.message);
       });
-  };
-
-  const createPaypalOrder = async () => {
-    console.log("dayCount", dayCount);
-    return createOrder({
-      id: listing.id,
-      dayCount,
-    });
-  };
-
-  const onApprovePaypalOrder = async (data: any) => {
-    await onApproveOrder(data);
-    createReservation();
   };
 
   return (
@@ -97,10 +76,7 @@ const ListingReservation: React.FC<ListingReservationProps> = ({
       />
       <hr />
       <div className="p-4">
-        <PaymentButtons
-          createOrder={createPaypalOrder}
-          onApprove={onApprovePaypalOrder}
-        />
+        <Button disabled={dayCount < 1} label="Reserve" onClick={goToPayment} />
       </div>
       <hr />
       <div

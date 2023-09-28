@@ -10,7 +10,6 @@ import { categories } from "@/app/components/navbar/Categories";
 import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
 import ListingReservation from "@/app/components/listings/ListingReservation";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 interface ListingClientProps {
   reservations?: SafeReservation[];
@@ -19,14 +18,6 @@ interface ListingClientProps {
   };
   currentUser?: SafeUser | null;
 }
-
-if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
-  throw new Error("Missing NEXT_PUBLIC_PAYPAL_CLIENT_ID");
-}
-
-const paypalScriptOptions = {
-  clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-};
 
 const ListingClient: React.FC<ListingClientProps> = ({
   listing,
@@ -94,12 +85,10 @@ const ListingClient: React.FC<ListingClientProps> = ({
                 md:col-span-3
               "
             >
-              <PayPalScriptProvider options={paypalScriptOptions}>
-                <ListingReservation
-                  listing={listing}
-                  disabledDates={disabledDates}
-                />
-              </PayPalScriptProvider>
+              <ListingReservation
+                listing={listing}
+                disabledDates={disabledDates}
+              />
             </div>
           </div>
         </div>
