@@ -6,8 +6,9 @@ import { SafeListing, SafeUser } from "@/app/types";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Button from "../Button";
-import { usePaymentStore } from "@/app/stores/payment";
 import axios from "axios";
+import { useState } from "react";
+import { Range } from "react-date-range";
 
 interface ListingReservationProps {
   listing: SafeListing & {
@@ -16,14 +17,18 @@ interface ListingReservationProps {
   disabledDates: Date[];
 }
 
+const initialDateRange = {
+  startDate: new Date(),
+  endDate: new Date(),
+  key: "selection",
+};
+
 const ListingReservation: React.FC<ListingReservationProps> = ({
   listing,
   disabledDates,
 }) => {
   const router = useRouter();
-  const dateRange = usePaymentStore((store) => store.dateRange);
-  const setListing = usePaymentStore((store) => store.setListing);
-  const setDateRange = usePaymentStore((store) => store.setDateRange);
+  const [dateRange, setDateRange] = useState<Range>(initialDateRange);
 
   const dayCount =
     dateRange.endDate && dateRange.startDate
@@ -34,7 +39,7 @@ const ListingReservation: React.FC<ListingReservationProps> = ({
 
   const goToPayment = () => {
     if (dayCount < 1) {
-      toast.error("You must select at least one day.");
+      toast.error("You must select at least one night.");
       return;
     }
     axios
@@ -44,12 +49,11 @@ const ListingReservation: React.FC<ListingReservationProps> = ({
         endDate: dateRange.endDate,
       })
       .then((res) => {
-        setListing(listing);
-        router.push(`/listings/${res.data.id}/payment`);
+        const { listingId, reservationId } = res.data;
+        router.push(`/listings/${listingId}/${reservationId}/payment`);
       })
       .catch((err) => {
-        console.log(err);
-        // toast.error(err.response.data.message);
+        toast.error(err.response.data);
       });
   };
 

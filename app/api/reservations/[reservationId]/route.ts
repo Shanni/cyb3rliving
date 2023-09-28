@@ -7,34 +7,38 @@ interface IParams {
   reservationId?: string;
 }
 
-// export async function PUT(
-//   _: Request,
-//   { params }: { params: IParams }
-// ) {
-//   const currentUser = await getCurrentUser();
+export async function PUT(request: Request, { params }: { params: IParams }) {
+  const currentUser = await getCurrentUser();
 
-//   if (!currentUser) {
-//     return NextResponse.error();
-//   }
+  const { reservationId } = params;
+  const { totalPrice } = await request.json();
 
-//   const { reservationId } = params;
+  if (!currentUser) {
+    return new Response("You must be logged in to book a reservation", {
+      status: 401,
+      statusText: "Unauthorized",
+    });
+  }
 
-//   if (!reservationId || typeof reservationId !== "string") {
-//     throw new Error("Invalid ID");
-//   }
+  if (!reservationId) {
+    return new Response("Cannot find reservation", {
+      status: 400,
+      statusText: "Unauthorized",
+    });
+  }
 
-//   const reservation = await prisma.reservation.updateMany({
-//     where: {
-//       id: reservationId,
-//       OR: [{ userId: currentUser.id }, { listing: { userId: currentUser.id } }],
-//     },
-//     data: {
-//       status: "cancelled",
-//     },
-//   });
+  const reservation = await prisma.reservation.update({
+    where: {
+      id: reservationId,
+    },
+    data: {
+      totalPrice: totalPrice,
+      hasPaid: true,
+    },
+  });
 
-//   return NextResponse.json(reservation);
-// }
+  return NextResponse.json(reservation);
+}
 
 export async function DELETE(_: Request, { params }: { params: IParams }) {
   const currentUser = await getCurrentUser();

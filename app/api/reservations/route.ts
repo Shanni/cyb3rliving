@@ -14,7 +14,6 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  console.log("post reservations:", body);
   const { listingId, startDate, endDate } = body;
 
   if (!listingId || !startDate || !endDate) {
@@ -50,7 +49,7 @@ export async function POST(request: Request) {
     });
   }
 
-  const listingAndReservation = await prisma.listing.update({
+  const listing = await prisma.listing.update({
     where: {
       id: listingId,
     },
@@ -63,7 +62,18 @@ export async function POST(request: Request) {
         },
       },
     },
+    select: {
+      id: true,
+      reservations: {
+        select: {
+          id: true,
+        },
+      },
+    },
   });
 
-  return NextResponse.json(listingAndReservation);
+  return NextResponse.json({
+    listingId: listing.id,
+    reservationId: listing.reservations[listing.reservations.length - 1].id,
+  });
 }
