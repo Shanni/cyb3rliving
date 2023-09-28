@@ -11,6 +11,7 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
+  console.log("post reservations:", body);
   const { listingId, startDate, endDate, totalPrice } = body;
 
   if (!listingId || !startDate || !endDate || !totalPrice) {
