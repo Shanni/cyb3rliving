@@ -12,9 +12,12 @@ export default async function getCurrentUser() {
   try {
     const session = await getSession();
 
+    console.log(session);
+
     if (!session?.user?.email && !session?.user?.walletAddress) {
       return null;
     }
+
     let currentUser: User | null;
     if (session?.user?.email) {
       currentUser = await prisma.user.findUnique({

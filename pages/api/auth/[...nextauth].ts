@@ -6,7 +6,6 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 import prisma from "@/app/libs/prismadb";
-import { getSession } from "next-auth/react";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -73,7 +72,10 @@ export const authOptions: AuthOptions = {
         if (!wallet) {
           //create new user
           const newUser = await prisma.user.create({
-            data: {},
+            data: {
+              name: "web3wallet",
+              email: credentials.walletAddress,
+            },
           });
 
           //create wallet
