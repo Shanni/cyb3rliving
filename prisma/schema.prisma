@@ -27,6 +27,7 @@ model User {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 model Wallet{
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   web3address String @unique
@@ -34,6 +35,8 @@ model Wallet{
   userId      String @db.ObjectId @unique
 }
 
+=======
+>>>>>>> parent of c8f610c (v1)
 =======
 >>>>>>> parent of c8f610c (v1)
 model Account {
