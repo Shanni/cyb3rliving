@@ -9,7 +9,7 @@ import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import axios from "axios";
 import { differenceInDays } from "date-fns";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 
 type Props = Awaited<ReturnType<typeof getListingAndReservation>> & {
@@ -24,14 +24,58 @@ const paypalScriptOptions = {
   clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
 };
 
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
 const PaymentClient = ({ listing, reservation, currentUser }: Props) => {
   const router = useRouter();
+  const [countDownInSeconds, setCountDownInSeconds] = useState(60 * 20);
 
   useEffect(() => {
     if (!currentUser || currentUser.id !== reservation.userId) {
       router.push(`/listings/${listing.id}`);
+      return;
     }
-  }, [currentUser, listing.id, reservation.userId, router]);
+    if (reservation.hasPaid) {
+      router.push(`/trips`);
+      return;
+    }
+    const remainingSeconds = Math.round(
+      reservation.createdAt.getTime() / 1000 +
+        60 * 20 -
+        new Date().getTime() / 1000
+    );
+    if (remainingSeconds <= 0) {
+      router.push(`/listings/${listing.id}`);
+      return;
+    }
+    setCountDownInSeconds(remainingSeconds);
+    const interval = setInterval(() => {
+      setCountDownInSeconds((prev) => prev - 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [
+    currentUser,
+    listing.id,
+    reservation.createdAt,
+    reservation.hasPaid,
+    reservation.userId,
+    router,
+  ]);
+
+  const formattedCountDown = useMemo(() => {
+    const minutes = Math.floor(countDownInSeconds / 60);
+    const seconds = countDownInSeconds % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  }, [countDownInSeconds]);
 
   const confirmReservation = async () => {
     const res = await axios.put(`/api/reservations/${reservation.id}`, {
@@ -60,14 +104,31 @@ const PaymentClient = ({ listing, reservation, currentUser }: Props) => {
 
   return (
     <Container>
-      <h1>Successfully reserved {listing.title}</h1>
-      <h2>You have 20 minutes to make a payment</h2>
-      <PayPalScriptProvider options={paypalScriptOptions}>
-        <PayPalButtons
-          createOrder={createPaypalOrder}
-          onApprove={onApprovePaypalOrder}
-        />
-      </PayPalScriptProvider>
+      <h1
+        className="
+      text-primary-dark text-2xl
+      "
+      >
+        Successfully reserved{" "}
+        <span className="text-slate-700 font-bold">{listing.title}</span>
+      </h1>
+      <p>
+        {formatDate(reservation.startDate)} - {formatDate(reservation.endDate)}
+      </p>
+      <p>
+        Pay{" "}
+        {listing.price *
+          differenceInDays(reservation.endDate, reservation.startDate)}
+      </p>
+      <h2>You have {formattedCountDown} to make a payment</h2>
+      <div className="mt-8">
+        <PayPalScriptProvider options={paypalScriptOptions}>
+          <PayPalButtons
+            createOrder={createPaypalOrder}
+            onApprove={onApprovePaypalOrder}
+          />
+        </PayPalScriptProvider>
+      </div>
     </Container>
   );
 };
