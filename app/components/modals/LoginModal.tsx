@@ -160,7 +160,6 @@ const LoginModal = () => {
 
   return (
 <<<<<<< HEAD
-<<<<<<< HEAD
     <>
       <Modal
         disabled={isLoading}
@@ -174,8 +173,6 @@ const LoginModal = () => {
       />
     </>
 =======
-=======
->>>>>>> parent of c8f610c (v1)
     <Modal
       disabled={isLoading}
       isOpen={loginModal.isOpen}
@@ -186,9 +183,6 @@ const LoginModal = () => {
       body={bodyContent}
       footer={footerContent}
     />
-<<<<<<< HEAD
->>>>>>> parent of c8f610c (v1)
-=======
 >>>>>>> parent of c8f610c (v1)
   );
 };

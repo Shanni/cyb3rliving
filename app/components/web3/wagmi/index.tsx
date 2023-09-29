@@ -14,7 +14,6 @@ const chains = [arbitrum, mainnet, polygon];
 const projectId = "cde470bc146ed440b9d7db417d48bd97";
 
 <<<<<<< HEAD
-<<<<<<< HEAD
   if (!projectId) {
     console.log("projectId: ", projectId);
     throw new Error("projectId is required");
@@ -32,8 +31,6 @@ const projectId = "cde470bc146ed440b9d7db417d48bd97";
 
   const ethereumClient = new EthereumClient(wagmiConfig, chains);
 =======
-=======
->>>>>>> parent of c8f610c (v1)
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiConfig = createConfig({
   autoConnect: true,
@@ -41,9 +38,6 @@ const wagmiConfig = createConfig({
   publicClient,
 });
 const ethereumClient = new EthereumClient(wagmiConfig, chains);
-<<<<<<< HEAD
->>>>>>> parent of c8f610c (v1)
-=======
 >>>>>>> parent of c8f610c (v1)
 
 export default function Wagmi() {
