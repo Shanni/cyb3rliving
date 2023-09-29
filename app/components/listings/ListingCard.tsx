@@ -3,14 +3,12 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
-import { format } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 
-import useCountries from "@/app/hooks/useCountries";
 import { SafeListing, SafeReservation, SafeUser } from "@/app/types";
 
 import HeartButton from "../HeartButton";
 import Button from "../Button";
-import ClientOnly from "../ClientOnly";
 import { parseLocation } from "@/app/utils/scripts/parseLocation";
 
 interface ListingCardProps {
@@ -49,13 +47,12 @@ const ListingCard: React.FC<ListingCardProps> = ({
     [disabled, onAction, actionId]
   );
 
-  const price = useMemo(() => {
-    if (reservation) {
-      return reservation.totalPrice;
-    }
-
-    return data.price;
-  }, [reservation, data.price]);
+  const shouldPayTotal = !reservation
+    ? 0
+    : differenceInDays(
+        new Date(reservation.endDate),
+        new Date(reservation.startDate)
+      ) * reservation.listing.price;
 
   const reservationDate = useMemo(() => {
     if (!reservation) {
@@ -114,10 +111,23 @@ const ListingCard: React.FC<ListingCardProps> = ({
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
         </div>
-        <div className="flex flex-row items-center gap-1">
-          <div className="font-semibold">$ {price}</div>
-          {!reservation && <div className="font-light">night</div>}
-        </div>
+        {reservation ? (
+          reservation.hasPaid ? (
+            <div className="font-semibold">$ {reservation.totalPrice}</div>
+          ) : (
+            <a
+              href={`/listings/${reservation.listingId}/${reservation.id}/payment`}
+              className="font-semibold text-primary-dark hover:underline"
+            >
+              Pay {shouldPayTotal}
+            </a>
+          )
+        ) : (
+          <div className="flex flex-row items-center gap-1">
+            <div className="font-semibold">$ {data.price}</div>
+            <div className="font-light">night</div>
+          </div>
+        )}
         {onAction && actionLabel && (
           <Button
             disabled={disabled}

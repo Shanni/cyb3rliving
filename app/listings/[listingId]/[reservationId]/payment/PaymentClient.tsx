@@ -5,6 +5,7 @@ import Container from "@/app/components/Container";
 import { createOrder } from "@/app/libs/paypal/createOrder";
 import { onApproveOrder } from "@/app/libs/paypal/onApproveOrder";
 import { SafeUser } from "@/app/types";
+import { GRACE_PERIOD } from "@/app/utils/constants";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import axios from "axios";
 import { differenceInDays } from "date-fns";
@@ -22,6 +23,7 @@ if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
 
 const paypalScriptOptions = {
   clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+  currency: "CAD",
 };
 
 const formatDate = (date: Date) => {
@@ -34,7 +36,9 @@ const formatDate = (date: Date) => {
 
 const PaymentClient = ({ listing, reservation, currentUser }: Props) => {
   const router = useRouter();
-  const [countDownInSeconds, setCountDownInSeconds] = useState(60 * 20);
+  const [countDownInSeconds, setCountDownInSeconds] = useState(
+    GRACE_PERIOD / 1000
+  );
 
   useEffect(() => {
     if (!currentUser || currentUser.id !== reservation.userId) {
@@ -46,9 +50,8 @@ const PaymentClient = ({ listing, reservation, currentUser }: Props) => {
       return;
     }
     const remainingSeconds = Math.round(
-      reservation.createdAt.getTime() / 1000 +
-        60 * 20 -
-        new Date().getTime() / 1000
+      (reservation.createdAt.getTime() + GRACE_PERIOD - new Date().getTime()) /
+        1000
     );
     if (remainingSeconds <= 0) {
       router.push(`/listings/${listing.id}`);
