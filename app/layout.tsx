@@ -40,17 +40,16 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`bg-primary-light ${font.className}`}>
-        <Wagmi>
-          <ClientOnly>
-            <ToasterProvider />
-            <LoginModal />
-            <RegisterModal />
-            <SearchModal />
-            <RentModal />
-            <Navbar currentUser={currentUser} user={user} />
-          </ClientOnly>
-          <div className="pb-20 pt-28">{children}</div>
-        </Wagmi>
+        <ClientOnly>
+          <ToasterProvider />
+          <LoginModal />
+          <RegisterModal />
+          <SearchModal />
+          <RentModal />
+          <Navbar currentUser={currentUser} user={user} />
+        </ClientOnly>
+        <Wagmi />
+        <div className="pb-20 pt-28">{children}</div>
       </body>
     </html>
   );

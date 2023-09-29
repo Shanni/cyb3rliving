@@ -14,7 +14,6 @@ import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
-import { useAccount, WagmiConfig } from "wagmi";
 import { useWeb3Modal } from "@web3modal/react";
 import walletConnectSvg from "../custom_svg/walletConnectSvg";
 import getCurrentUser, { getSession } from "@/app/actions/getCurrentUser";
@@ -25,7 +24,6 @@ const LoginModal = () => {
   const registerModal = useRegisterModal();
   const [isLoading, setIsLoading] = useState(false);
   const { open, close } = useWeb3Modal();
-  const { address, isConnecting, isDisconnected } = useAccount();
 
   const {
     register,
@@ -161,6 +159,7 @@ const LoginModal = () => {
   );
 
   return (
+<<<<<<< HEAD
     <>
       <Modal
         disabled={isLoading}
@@ -173,6 +172,18 @@ const LoginModal = () => {
         footer={footerContent}
       />
     </>
+=======
+    <Modal
+      disabled={isLoading}
+      isOpen={loginModal.isOpen}
+      title="Login"
+      actionLabel="Continue"
+      onClose={loginModal.onClose}
+      onSubmit={handleSubmit(onSubmit)}
+      body={bodyContent}
+      footer={footerContent}
+    />
+>>>>>>> parent of c8f610c (v1)
   );
 };
 

@@ -21,13 +21,12 @@ model User {
   updatedAt      DateTime  @updatedAt
   favoriteIds    String[]  @db.ObjectId
 
-  web3wallet   Wallet?
-
   accounts     Account[]
   listings     Listing[]
   reservations Reservation[]
 }
 
+<<<<<<< HEAD
 model Wallet{
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   web3address String @unique
@@ -35,6 +34,8 @@ model Wallet{
   userId      String @db.ObjectId @unique
 }
 
+=======
+>>>>>>> parent of c8f610c (v1)
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String  @db.ObjectId
