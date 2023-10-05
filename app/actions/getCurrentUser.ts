@@ -12,36 +12,15 @@ export default async function getCurrentUser() {
   try {
     const session = await getSession();
 
-    console.log(session);
-
-    if (!session?.user?.email && !session?.user?.walletAddress) {
+    if (!session?.user?.id) {
       return null;
     }
 
-    let currentUser: User | null;
-    if (session?.user?.email) {
-      currentUser = await prisma.user.findUnique({
-        where: {
-          email: session.user.email as string,
-        },
-      });
-    } else {
-      const wallet = await prisma.wallet.findUnique({
-        where: {
-          web3address: session.user.walletAddress as string,
-        },
-      });
-
-      if (!wallet) {
-        return null;
-      }
-
-      currentUser = await prisma.user.findUnique({
-        where: {
-          id: wallet.userId,
-        },
-      });
-    }
+    const currentUser = await prisma.user.findUnique({
+      where: {
+        id: session.user.id,
+      },
+    });
 
     if (!currentUser) {
       return null;
