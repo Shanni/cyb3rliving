@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
@@ -14,18 +14,13 @@ import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
-import { useAccount, WagmiConfig } from "wagmi";
-import { useWeb3Modal } from "@web3modal/react";
-import walletConnectSvg from "../custom_svg/walletConnectSvg";
-import getCurrentUser, { getSession } from "@/app/actions/getCurrentUser";
+import WalletConnectLogin from "../thirdPartyLogin/walletConnectLogin";
 
 const LoginModal = () => {
   const router = useRouter();
   const loginModal = useLoginModal();
   const registerModal = useRegisterModal();
   const [isLoading, setIsLoading] = useState(false);
-  const { open, close } = useWeb3Modal();
-  const { address, isConnecting, isDisconnected } = useAccount();
 
   const {
     register,
@@ -49,28 +44,6 @@ const LoginModal = () => {
 
       if (callback?.ok) {
         toast.success("Logged in");
-        router.refresh();
-        loginModal.onClose();
-      }
-
-      if (callback?.error) {
-        toast.error(callback.error);
-      }
-    });
-  };
-
-  const onWeb3Connect = () => {
-    setIsLoading(true);
-
-    signIn("web3wallet", {
-      walletAddress: address,
-      redirect: false,
-    }).then((callback) => {
-      setIsLoading(false);
-
-      if (callback?.ok) {
-        toast.success("Logged in");
-
         router.refresh();
         loginModal.onClose();
       }
@@ -118,26 +91,7 @@ const LoginModal = () => {
         icon={FcGoogle}
         onClick={() => signIn("google")}
       />
-      <Button
-        outline
-        label="Continue with WalletConnect"
-        icon={walletConnectSvg}
-        onClick={() => {
-          open().then(() => {
-            if (isConnecting) {
-              toast.loading("Connecting to wallet");
-            }
-
-            if (isDisconnected) {
-              toast.error("Disconnected from wallet");
-            }
-
-            if (address) {
-              onWeb3Connect();
-            }
-          });
-        }}
-      />
+      <WalletConnectLogin />
       <div
         className="
       text-neutral-500 text-center mt-4 font-light"

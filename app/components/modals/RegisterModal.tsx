@@ -1,10 +1,9 @@
 "use client";
 
 import axios from "axios";
-import { AiFillGithub } from "react-icons/ai";
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import walletConnectSvg from "../custom_svg/walletConnectSvg";
@@ -17,7 +16,7 @@ import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
 import { useWeb3Modal } from "@web3modal/react";
-import Image from "next/image";
+import WalletConnectLogin from "../thirdPartyLogin/walletConnectLogin";
 
 const RegisterModal = () => {
   const [user, setUser] = useState({ loggedIn: null, addr: null });
@@ -103,14 +102,7 @@ const RegisterModal = () => {
         icon={FcGoogle}
         onClick={() => signIn("google")}
       />
-      <Button
-        outline
-        label="Continue with WalletConnect"
-        icon={walletConnectSvg}
-        onClick={() => {
-          open();
-        }}
-      />
+      <WalletConnectLogin />
       <div
         className="
           text-neutral-500 
