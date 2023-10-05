@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { User } from "@prisma/client";
 
 import prisma from "@/app/libs/prismadb";
 
@@ -107,6 +108,24 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    async jwt(params) {
+      //console.log("jwt:" + params);
+
+      params.user && (params.token.user = params.user);
+
+      return params.token;
+    },
+    async session(params) {
+      //console.log("session:" + params);
+
+      const user: User = params.token.user as User;
+
+      user && (params.session.user = user);
+
+      return params.session;
+    },
+  },
 };
 
 export default NextAuth(authOptions);
