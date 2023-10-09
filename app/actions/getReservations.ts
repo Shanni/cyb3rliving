@@ -30,8 +30,8 @@ export default async function getReservations(params: IParams) {
     await prisma.reservation.deleteMany({
       where: {
         hasPaid: false,
-        createdAt: {
-          lte: new Date(Date.now() - GRACE_PERIOD),
+        startDate: {
+          lt: new Date(Date.now() - GRACE_PERIOD),
         },
       },
     });

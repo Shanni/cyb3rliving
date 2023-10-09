@@ -6,7 +6,6 @@ import { SafeListing, SafeUser } from "@/app/types";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Button from "../Button";
-import axios from "axios";
 import { useState } from "react";
 import { Range } from "react-date-range";
 
@@ -37,24 +36,14 @@ const ListingReservation: React.FC<ListingReservationProps> = ({
 
   const totalPrice = dayCount * listing.price;
 
-  const goToPayment = () => {
+  const goToQuestionnaire = () => {
     if (dayCount < 1) {
       toast.error("You must select at least one night.");
       return;
     }
-    axios
-      .post("/api/reservations", {
-        listingId: listing.id,
-        startDate: dateRange.startDate,
-        endDate: dateRange.endDate,
-      })
-      .then((res) => {
-        const { listingId, reservationId } = res.data;
-        router.push(`/listings/${listingId}/${reservationId}/payment`);
-      })
-      .catch((err) => {
-        toast.error(err.response.data);
-      });
+    router.push(
+      `/listings/${listing.id}/questionnaire?start=${dateRange.startDate}&end=${dateRange.endDate}`
+    );
   };
 
   return (
@@ -80,7 +69,11 @@ const ListingReservation: React.FC<ListingReservationProps> = ({
       />
       <hr />
       <div className="p-4">
-        <Button disabled={dayCount < 1} label="Reserve" onClick={goToPayment} />
+        <Button
+          disabled={dayCount < 1}
+          label="Reserve"
+          onClick={goToQuestionnaire}
+        />
       </div>
       <hr />
       <div
