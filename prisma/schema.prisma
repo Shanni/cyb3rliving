@@ -75,17 +75,25 @@ model Listing {
 }
 
 model Reservation {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @db.ObjectId
-  listingId   String   @db.ObjectId
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String            @db.ObjectId
+  listingId   String            @db.ObjectId
   startDate   DateTime
   endDate     DateTime
-  totalPrice  Int      @default(0)
-  createdAt   DateTime @default(now())
-  hasPaid     Boolean  @default(false)
-  isCancelled Boolean  @default(false)
-  isApproved  Boolean  @default(false)
+  totalPrice  Int               @default(0)
+  createdAt   DateTime          @default(now())
+  hasPaid     Boolean           @default(false)
+  isCancelled Boolean           @default(false)
+  status      ReservationStatus @default(PENDING)
+  questions   Json?
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+enum ReservationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
 }

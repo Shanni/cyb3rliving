@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { differenceInDays } from "date-fns";
+import { Resend } from "resend";
 
 const addQuestions = async (
   questions: { question: string; answer: string }[],
@@ -51,6 +52,30 @@ const addQuestions = async (
   ]);
 };
 
+const sendEmail = async (
+  email: string,
+  renterName: string,
+  renterEmail: string,
+  listingId: string,
+  reservationId: string
+) => {
+  const resend = new Resend(process.env.RECEND_API_KEY);
+  const baseUrl =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://flowairb.vercel.app";
+
+  const url = `${baseUrl}/listings/${listingId}/${reservationId}`;
+
+  resend.emails.send({
+    from: "Flowairb <onboarding@resend.dev>",
+    to: "taosit099@gmail.com",
+    subject: `Coliving Application from ${renterName}`,
+    reply_to: renterEmail,
+    html: `Click <a href="${url}">here</a> to view the reservation details and make a decision.`,
+  });
+};
+
 export async function POST(request: Request) {
   const currentUser = await getCurrentUser();
 
@@ -78,7 +103,7 @@ export async function POST(request: Request) {
     where: {
       AND: [
         {
-          isApproved: true,
+          status: "APPROVED",
         },
         {
           OR: [
@@ -143,6 +168,9 @@ export async function POST(request: Request) {
           endDate: endDate,
           totalPrice:
             originalListing.price * differenceInDays(endDate, startDate),
+          ...(questions && {
+            questions,
+          }),
         },
       },
     },
@@ -159,9 +187,18 @@ export async function POST(request: Request) {
   if (questions) {
     addQuestions(questions, currentUser.id);
   }
+  const reservationId =
+    listing.reservations[listing.reservations.length - 1].id;
+  sendEmail(
+    originalListing.user.email!,
+    currentUser.name!,
+    currentUser.email!,
+    listingId,
+    reservationId
+  );
 
   return NextResponse.json({
     listingId: listing.id,
-    reservationId: listing.reservations[listing.reservations.length - 1].id,
+    reservationId,
   });
 }

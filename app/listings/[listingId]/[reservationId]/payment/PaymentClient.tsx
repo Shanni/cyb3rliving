@@ -5,12 +5,11 @@ import Container from "@/app/components/Container";
 import { createOrder } from "@/app/libs/paypal/createOrder";
 import { onApproveOrder } from "@/app/libs/paypal/onApproveOrder";
 import { SafeUser } from "@/app/types";
-import { GRACE_PERIOD } from "@/app/utils/constants";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import axios from "axios";
 import { differenceInDays } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
 type Props = Awaited<ReturnType<typeof getListingAndReservation>> & {
@@ -36,9 +35,6 @@ const formatDate = (date: Date) => {
 
 const PaymentClient = ({ listing, reservation, currentUser }: Props) => {
   const router = useRouter();
-  const [countDownInSeconds, setCountDownInSeconds] = useState(
-    GRACE_PERIOD / 1000
-  );
 
   useEffect(() => {
     if (!currentUser || currentUser.id !== reservation.userId) {
@@ -49,22 +45,6 @@ const PaymentClient = ({ listing, reservation, currentUser }: Props) => {
       router.push(`/trips`);
       return;
     }
-    const remainingSeconds = Math.round(
-      (reservation.createdAt.getTime() + GRACE_PERIOD - new Date().getTime()) /
-        1000
-    );
-    if (remainingSeconds <= 0) {
-      router.push(`/listings/${listing.id}`);
-      return;
-    }
-    setCountDownInSeconds(remainingSeconds);
-    const interval = setInterval(() => {
-      setCountDownInSeconds((prev) => prev - 1);
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
   }, [
     currentUser,
     listing.id,
@@ -73,12 +53,6 @@ const PaymentClient = ({ listing, reservation, currentUser }: Props) => {
     reservation.userId,
     router,
   ]);
-
-  const formattedCountDown = useMemo(() => {
-    const minutes = Math.floor(countDownInSeconds / 60);
-    const seconds = countDownInSeconds % 60;
-    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
-  }, [countDownInSeconds]);
 
   const confirmReservation = async () => {
     const res = await axios.put(`/api/reservations/${reservation.id}`, {
@@ -123,7 +97,6 @@ const PaymentClient = ({ listing, reservation, currentUser }: Props) => {
         {listing.price *
           differenceInDays(reservation.endDate, reservation.startDate)}
       </p>
-      <h2>You have {formattedCountDown} to make a payment</h2>
       <div className="mt-8">
         <PayPalScriptProvider options={paypalScriptOptions}>
           <PayPalButtons

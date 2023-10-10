@@ -82,6 +82,22 @@ export default async function getListings(params: IListingsParams) {
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        reservations: {
+          select: {
+            id: true,
+            startDate: true,
+            endDate: true,
+            totalPrice: true,
+            questions: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     const safeListings = listings.map((listing) => ({

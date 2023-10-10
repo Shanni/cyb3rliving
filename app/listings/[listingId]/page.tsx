@@ -16,7 +16,7 @@ const ListingPage = async ({ params }: { params: IParams }) => {
   const reservations = await getReservations(params);
 
   const approvedReservations = reservations.filter(
-    (reservation) => reservation.isApproved
+    (reservation) => reservation.status === "APPROVED"
   );
   const currentUser = await getCurrentUser();
 

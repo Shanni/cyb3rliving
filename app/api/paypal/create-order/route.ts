@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     purchase_units: [
       {
         amount: {
-          currency_code: "USD",
+          currency_code: "CAD",
           value: totalPrice.toString(),
         },
       },
