@@ -10,8 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String   @id @default(auto()) @map("_id") @db.ObjectId
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model User {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId 
   name           String?
   email          String?   @unique
   emailVerified  DateTime?
@@ -21,10 +37,23 @@ model User {
   updatedAt      DateTime  @updatedAt
   favoriteIds    String[]  @db.ObjectId
 
+  web3wallet   Wallet?
+
   accounts     Account[]
   listings     Listing[]
   reservations Reservation[]
+<<<<<<< HEAD
   applications Application[]
+=======
+  sessions     Session[]
+}
+
+model Wallet{
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  web3address String @unique
+  User        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String @db.ObjectId @unique
+>>>>>>> 09d28afdb15d0652e98d466bfbdce0e4b502598c
 }
 
 model Account {
