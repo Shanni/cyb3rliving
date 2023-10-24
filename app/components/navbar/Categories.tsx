@@ -37,7 +37,7 @@ export const categories = [
     description: "This property is modern!",
   },
   {
-    label: "4 Seasgit reset --soft HEAD~",
+    label: "4 Seas,
     icon: TbMountain,
     description: "This property is in the countryside!",
   },
