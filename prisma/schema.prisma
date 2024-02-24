@@ -42,9 +42,7 @@ model User {
   accounts     Account[]
   listings     Listing[]
   reservations Reservation[]
-<<<<<<< HEAD
   applications Application[]
-=======
   sessions     Session[]
 }
 
@@ -53,7 +51,6 @@ model Wallet{
   web3address String @unique
   User        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String @db.ObjectId @unique
->>>>>>> 09d28afdb15d0652e98d466bfbdce0e4b502598c
 }
 
 model Account {
