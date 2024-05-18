@@ -14,15 +14,13 @@ import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
-import { useWeb3Modal } from "@web3modal/react";
-import walletConnectSvg from "../custom_svg/walletConnectSvg";
+import WalletConnectLogin from "../thirdPartyLogin/walletConnectLogin";
 
 const LoginModal = () => {
   const router = useRouter();
   const loginModal = useLoginModal();
   const registerModal = useRegisterModal();
   const [isLoading, setIsLoading] = useState(false);
-  const { open, close } = useWeb3Modal();
 
   const {
     register,
@@ -93,14 +91,7 @@ const LoginModal = () => {
         icon={FcGoogle}
         onClick={() => signIn("google")}
       />
-      <Button
-        outline
-        label="Continue with WalletConnect"
-        icon={walletConnectSvg}
-        onClick={() => {
-          open();
-        }}
-      />
+      <WalletConnectLogin />
       <div
         className="
       text-neutral-500 text-center mt-4 font-light"
@@ -124,16 +115,18 @@ const LoginModal = () => {
   );
 
   return (
-    <Modal
-      disabled={isLoading}
-      isOpen={loginModal.isOpen}
-      title="Login"
-      actionLabel="Continue"
-      onClose={loginModal.onClose}
-      onSubmit={handleSubmit(onSubmit)}
-      body={bodyContent}
-      footer={footerContent}
-    />
+    <>
+      <Modal
+        disabled={isLoading}
+        isOpen={loginModal.isOpen}
+        title="Login"
+        actionLabel="Continue"
+        onClose={loginModal.onClose}
+        onSubmit={handleSubmit(onSubmit)}
+        body={bodyContent}
+        footer={footerContent}
+      />
+    </>
   );
 };
 

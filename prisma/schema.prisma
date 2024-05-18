@@ -10,8 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String   @id @default(auto()) @map("_id") @db.ObjectId
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model User {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId 
   name           String?
   email          String?   @unique
   emailVerified  DateTime?
@@ -25,6 +41,20 @@ model User {
   listings       Listing[]
   reservations   Reservation[]
   savedQuestions Question[]
+  web3wallet   Wallet?
+
+  accounts     Account[]
+  listings     Listing[]
+  reservations Reservation[]
+  applications Application[]
+  sessions     Session[]
+}
+
+model Wallet{
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  web3address String @unique
+  User        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String @db.ObjectId @unique
 }
 
 model Account {
@@ -72,8 +102,21 @@ model Listing {
 
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   reservations Reservation[]
+  applications Application[]
 }
 
+model Application {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  listingId  String   @db.ObjectId
+  startDate  DateTime
+  endDate    DateTime
+  totalPrice Int
+  createdAt  DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
 model Reservation {
   id          String            @id @default(auto()) @map("_id") @db.ObjectId
   userId      String            @db.ObjectId
