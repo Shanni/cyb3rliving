@@ -1,4 +1,5 @@
 import prisma from "@/app/libs/prismadb";
+import { GRACE_PERIOD } from "../utils/constants";
 
 interface IParams {
   listingId?: string;
@@ -10,7 +11,9 @@ export default async function getReservations(params: IParams) {
   try {
     const { listingId, userId, authorId } = params;
 
-    const query: any = {};
+    const query: any = {
+      isCancelled: false,
+    };
 
     if (listingId) {
       query.listingId = listingId;
@@ -23,6 +26,15 @@ export default async function getReservations(params: IParams) {
     if (authorId) {
       query.listing = { userId: authorId };
     }
+
+    await prisma.reservation.deleteMany({
+      where: {
+        hasPaid: false,
+        startDate: {
+          lt: new Date(Date.now() - GRACE_PERIOD),
+        },
+      },
+    });
 
     const reservations = await prisma.reservation.findMany({
       where: query,

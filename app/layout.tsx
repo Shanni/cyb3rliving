@@ -1,8 +1,6 @@
 import "../.flow/config";
 
 import { Nunito } from "next/font/google";
-import { useState, useEffect } from "react";
-import * as fcl from "@onflow/fcl";
 
 import Navbar from "@/app/components/navbar/Navbar";
 import LoginModal from "@/app/components/modals/LoginModal";
@@ -34,8 +32,6 @@ export default async function RootLayout({
 }) {
   const currentUser = await getCurrentUser();
   let user: any;
-  // const [user, setUser] = useState({ loggedIn: null, addr: null });
-  // useEffect(() => fcl.currentUser.subscribe(setUser) as any, []);
 
   return (
     <html lang="en">
