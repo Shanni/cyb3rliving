@@ -30,6 +30,7 @@
     "bcrypt": "^5.1.0",
     "better-sqlite3": "^7.5.0",
     "cloudinary": "^1.40.0",
+    "compressorjs": "^1.2.1",
     "cors": "^2.8.5",
     "date-fns": "^2.29.3",
     "dotenv": "^8.2.0",

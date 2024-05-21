@@ -13,6 +13,9 @@ module.exports = {
       boxShadow: {
         thin: "2px 2px black",
       },
+      zIndex: {
+        2: "2",
+      },
       colors: {
         primary: {
           light: "hsl(var(--primary-light) / <alpha-value>)",

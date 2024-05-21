@@ -1,6 +1,5 @@
 import { ImageListType, ImageType } from "react-images-uploading";
 import { useState } from "react";
-import axios from "axios";
 import { toast } from "react-hot-toast";
 import { PreviewImageWithUrl } from "@/app/types";
 import { uploadImage } from "@/app/services/uploadImage";
@@ -46,7 +45,10 @@ export const useUploadImage = ({ value: images, onChange }: Props) => {
     // replace image
     if (images.length && addUpdateIndex[0] < images.length) {
       const newImages = [...images];
-      const urlPromise = uploadImage(imageList[addUpdateIndex[0]].dataURL!);
+      const urlPromise = uploadImage({
+        dataUrl: imageList[addUpdateIndex[0]].dataURL!,
+        file: imageList[addUpdateIndex[0]].file!,
+      });
       const originalImages = [...images];
       newImages[addUpdateIndex[0]] = {
         ...imageList[addUpdateIndex[0]],
@@ -86,7 +88,10 @@ export const useUploadImage = ({ value: images, onChange }: Props) => {
       const image = imageList[index];
       return {
         ...image,
-        url: uploadImage(image.dataURL!),
+        url: uploadImage({
+          dataUrl: image.dataURL!,
+          file: image.file!,
+        }),
       };
     });
     onChange([...images, ...newImagesPromises]);

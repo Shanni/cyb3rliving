@@ -19,7 +19,6 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
     <div
       onClick={() => onClick(label)}
       className={`
-        
         border-2
         p-4
         flex

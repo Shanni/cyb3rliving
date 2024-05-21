@@ -6,11 +6,23 @@
   :root {
     /* For hsl(198deg 93% 60% / <alpha-value>) */
     --primary-muted: 240 30% 89%;
-    --primary-light: 38 70% 80%;/*227 100% 92%; */
+    --primary-light: 38 70% 80%; /*227 100% 92%; */
     --primary: 227 90% 70%;
     --primary-dark: 227 90% 55%;
 
     --text-disabled: 0 0% 40%;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }
 
@@ -117,4 +129,16 @@ body,
   --size: 24px;
   height: var(--size);
   width: var(--size);
+}
+
+.listing-card-chevron {
+  width: 24px;
+  height: 24px;
+}
+
+@media (max-width: 639px) {
+  .listing-card-chevron {
+    width: 32px;
+    height: 32px;
+  }
 }

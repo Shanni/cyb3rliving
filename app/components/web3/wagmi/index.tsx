@@ -14,7 +14,6 @@ export default function Wagmi({ children }: { children: React.ReactNode }) {
   const projectId = wagmiProjectId;
 
   if (!projectId) {
-    console.log("projectId: ", projectId);
     throw new Error("projectId is required");
   }
 
