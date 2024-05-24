@@ -27,7 +27,7 @@ model VerificationToken {
 }
 
 model User {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId 
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
   name           String?
   email          String?   @unique
   emailVerified  DateTime?
@@ -41,20 +41,16 @@ model User {
   listings       Listing[]
   reservations   Reservation[]
   savedQuestions Question[]
-  web3wallet   Wallet?
-
-  accounts     Account[]
-  listings     Listing[]
-  reservations Reservation[]
-  applications Application[]
-  sessions     Session[]
+  web3wallet     Wallet?
+  applications   Application[]
+  sessions       Session[]
 }
 
-model Wallet{
+model Wallet {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   web3address String @unique
   User        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String @db.ObjectId @unique
+  userId      String @unique @db.ObjectId
 }
 
 model Account {
@@ -117,6 +113,7 @@ model Application {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
 }
+
 model Reservation {
   id          String            @id @default(auto()) @map("_id") @db.ObjectId
   userId      String            @db.ObjectId

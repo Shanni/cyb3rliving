@@ -2,14 +2,17 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { differenceInDays, format } from "date-fns";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 import { SafeListing, SafeReservation, SafeUser } from "@/app/types";
 
 import HeartButton from "../HeartButton";
 import Button from "../Button";
 import { parseLocation } from "@/app/utils/scripts/parseLocation";
+import { Carousel } from "react-responsive-carousel";
+import { ListingCardCarouselButton } from "./ListingCardCarouselButton";
 
 interface ListingCardProps {
   data: SafeListing;
@@ -31,6 +34,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
   currentUser,
 }) => {
   const router = useRouter();
+  const [isHover, setIsHover] = useState(false);
+  const [viewingIndex, setViewingIndex] = useState(0);
 
   const parsedLocation = parseLocation(data.locationValue);
 
@@ -68,6 +73,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
   return (
     <div
       onClick={() => router.push(`/listings/${data.id}`)}
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
       className="col-span-1 cursor-pointer group"
     >
       <div className="flex flex-col gap-2 w-full">
@@ -80,18 +87,43 @@ const ListingCard: React.FC<ListingCardProps> = ({
             rounded-md
           "
         >
-          <Image
-            fill
-            className="
-              object-cover 
-              h-full 
-              w-full 
-              group-hover:scale-110 
-              transition
-            "
-            src={data.images[0]}
-            alt="Listing"
-          />
+          <Carousel
+            key={data.id}
+            showStatus={false}
+            showIndicators={false}
+            renderArrowPrev={(onClickHandler, hasPrev, label) => (
+              <ListingCardCarouselButton
+                direction="prev"
+                setViewingIndex={setViewingIndex}
+                onClickHandler={onClickHandler}
+                canScroll={hasPrev}
+                label={label}
+              />
+            )}
+            renderArrowNext={(onClickHandler, hasNext, label) => (
+              <ListingCardCarouselButton
+                direction="next"
+                setViewingIndex={setViewingIndex}
+                onClickHandler={onClickHandler}
+                canScroll={hasNext}
+                label={label}
+              />
+            )}
+          >
+            {data.images.map((image, index) => (
+              <div key={image}>
+                <Image
+                  src={image}
+                  width={350}
+                  height={350}
+                  className={`aspect-square object-cover transition ${
+                    isHover && viewingIndex === index ? "scale-105" : ""
+                  }`}
+                  alt="Photo of the property"
+                />
+              </div>
+            ))}
+          </Carousel>
           <div
             className="
             absolute
@@ -103,7 +135,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
           </div>
         </div>
         <div>
-          <p className="font-semibold text-lg">{data.title}</p>
+          <p className="font-semibold text-lg">{}</p>
           <p className="font-light">
             {parsedLocation.street}, {parsedLocation.city}
           </p>

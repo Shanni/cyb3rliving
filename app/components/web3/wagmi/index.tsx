@@ -1,39 +1,35 @@
 "use client";
 
-import {
-  EthereumClient,
-  w3mConnectors,
-  w3mProvider,
-} from "@web3modal/ethereum";
+import { createWeb3Modal } from "@web3modal/wagmi/react";
 
-import { Web3Modal } from "@web3modal/react";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { wagmiProjectId, chains } from "./wagmiConfig";
+import { WagmiProvider } from "wagmi";
+import { wagmiProjectId, wagmiProjectConfig } from "./wagmiConfig";
 
 export default function Wagmi({ children }: { children: React.ReactNode }) {
   const projectId = wagmiProjectId;
 
   if (!projectId) {
-    console.log("projectId: ", projectId);
     throw new Error("projectId is required");
   }
 
-  const { publicClient } = configureChains(chains, [
-    w3mProvider({ projectId }),
-  ]);
-
-  const wagmiConfig = createConfig({
-    autoConnect: true,
-    connectors: w3mConnectors({ projectId, chains }),
-    publicClient,
+  createWeb3Modal({
+    wagmiConfig: wagmiProjectConfig,
+    projectId,
+    enableAnalytics: true, // Optional - defaults to your Cloud configuration
+    enableOnramp: true, // Optional - false as default
   });
 
-  const ethereumClient = new EthereumClient(wagmiConfig, chains);
+  // const { publicClient } = configureChains(chains, [
+  //   w3mProvider({ projectId }),
+  // ]);
 
-  return (
-    <>
-      <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
-    </>
-  );
+  // const wagmiConfig = createConfig({
+  //   autoConnect: true,
+  //   connectors: w3mConnectors({ projectId, chains }),
+  //   publicClient,
+  // });
+
+  // const ethereumClient = new EthereumClient(wagmiConfig, chains);
+
+  return <WagmiProvider config={wagmiProjectConfig}>{children}</WagmiProvider>;
 }

@@ -28,7 +28,6 @@ const formatDate = (date: Date) => {
 type Decision = "" | "approved" | "rejected";
 
 const ReservationClient = ({ currentUser, listing, reservation }: Props) => {
-  console.log({ listing, reservation });
   const [formData, setFormData] = useState({
     decision: "" as Decision,
     comment: "",
