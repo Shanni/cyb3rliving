@@ -15,12 +15,10 @@ import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
-import { useWeb3Modal } from "@web3modal/react";
 import WalletConnectLogin from "../thirdPartyLogin/walletConnectLogin";
 
 const RegisterModal = () => {
   const [user, setUser] = useState({ loggedIn: null, addr: null });
-  const { open, close } = useWeb3Modal();
 
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();

@@ -5,7 +5,7 @@ import useLoginModal from "@/app/hooks/useLoginModal";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 
 import { useAccount } from "wagmi";
-import { useWeb3Modal } from "@web3modal/react";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
