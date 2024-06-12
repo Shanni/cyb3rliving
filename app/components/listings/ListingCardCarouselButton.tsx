@@ -47,9 +47,9 @@ export const ListingCardCarouselButton = ({
         <path
           d="M9.09093 14.1208L12.7273 10.2499L9.09093 6.37891"
           stroke="#727272"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </button>

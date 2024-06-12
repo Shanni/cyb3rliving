@@ -16,31 +16,19 @@ const compressImage = (file: File | Blob) => {
   });
 };
 
-type ImageData = {
-  dataUrl: string;
-  file: File;
-};
+export const uploadFile = async (file: File) => {
+  const compressedFile = file.size > 1000000 ? await compressImage(file) : file;
 
-export const uploadImage: (data: ImageData) => Promise<string> = async ({
-  dataUrl,
-  file,
-}: ImageData) => {
-  try {
-    const response = await axios.post("/api/images", {
-      imageData: dataUrl,
-    });
-    return response.data.url as string;
-  } catch (error) {
-    const compressedFile = await compressImage(file);
+  const dataUrl = await new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.readAsDataURL(compressedFile);
+  });
 
-    const dataUrl = await new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.readAsDataURL(compressedFile);
-    });
-
-    return uploadImage({ dataUrl, file });
-  }
+  const response = await axios.post("/api/images", {
+    imageData: dataUrl,
+  });
+  return response.data.url as string;
 };
