@@ -8,15 +8,14 @@ import SwapIcon from "./assets/swap.svg";
 import DeleteIcon from "./assets/delete.svg";
 import LoadingIcon from "./assets/loading.svg";
 import { useUploadImage } from "./hooks/useUploadImage";
-import { PreviewImageWithUrl } from "@/app/types";
 
 declare global {
   var cloudinary: any;
 }
 
 interface ImageUploadProps {
-  onChange: (value: PreviewImageWithUrl[]) => void;
-  value: PreviewImageWithUrl[];
+  onChange: (value: string[]) => void;
+  value: string[];
 }
 
 const MAX_IMAGE_NUMBER = 30;
