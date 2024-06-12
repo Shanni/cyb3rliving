@@ -1,5 +1,4 @@
 import { Listing, Reservation, User } from "@prisma/client";
-import { ImageType } from "react-images-uploading";
 
 export type SafeListing = Omit<Listing, "createdAt"> & {
   createdAt: string;
@@ -23,10 +22,6 @@ export type SafeUser = Omit<
   updatedAt: string;
   emailVerified: string | null;
 };
-
-export type PreviewImageWithUrl = {
-  url: Promise<string> | string;
-} & ImageType;
 
 export type PlaceDetails = {
   address: string;

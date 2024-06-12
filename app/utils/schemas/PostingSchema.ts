@@ -22,7 +22,7 @@ const RoomCountSchema = z.object({
 });
 
 const ImagesSchema = z.object({
-  images: z.array(z.string()).length(1, "At least one photo is required"),
+  images: z.array(z.string()).min(1, "At least one photo is required"),
 });
 
 const TitleAndDescriptionSchema = z.object({

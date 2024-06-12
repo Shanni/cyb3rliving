@@ -22,6 +22,8 @@ import {
   Posting,
   PostingValidationSchema,
 } from "@/app/utils/schemas/PostingSchema";
+import { FilePondFile } from "filepond";
+import { uploadFile } from "@/app/services/uploadImage";
 
 enum STEPS {
   CATEGORY = 0,
@@ -59,12 +61,13 @@ const RentModal = () => {
     },
   });
 
+  const [filepondFiles, setFilepondFiles] = useState<FilePondFile[]>([]);
+
   const location = watch("location");
   const category = watch("category");
   const guestCount = watch("guestCount");
   const roomCount = watch("roomCount");
   const bathroomCount = watch("bathroomCount");
-  const images = watch("images");
 
   const setCustomValue = (
     id: Parameters<UseFormSetValue<Posting>>[0],
@@ -85,13 +88,30 @@ const RentModal = () => {
     setStep((value) => value + 1);
   };
 
-  const onSubmit: SubmitHandler<Posting> = () => {
+  const onSubmit: SubmitHandler<Posting> = async () => {
     const data = getValues();
     if (step !== STEPS.PRICE) {
       return onNext();
     }
 
     setIsLoading(true);
+
+    const imageUrlPromises = data.images.map((id) => {
+      const filepondFile = filepondFiles.find((file) => file.id === id);
+      if (!filepondFile) {
+        return null;
+      }
+      const url = uploadFile(filepondFile.file as File);
+      return url;
+    });
+
+    const results = await Promise.allSettled(imageUrlPromises);
+
+    const fulfilledResults = results.filter(
+      (result) => result.status === "fulfilled"
+    ) as PromiseFulfilledResult<string>[];
+
+    data.images = fulfilledResults.map((r) => r.value);
 
     axios
       .post("/api/listings", data)
@@ -136,9 +156,9 @@ const RentModal = () => {
       <div
         className="
           mt-2
-          grid 
-          grid-cols-1 
-          md:grid-cols-2 
+          grid
+          grid-cols-1
+          md:grid-cols-2
           gap-3
           max-h-[50vh]
           overflow-y-auto
@@ -218,8 +238,9 @@ const RentModal = () => {
         />
         <ErrorMessage message={errors.images?.message} />
         <ImageUpload
+          filepondFiles={filepondFiles}
+          setFilepondFiles={setFilepondFiles}
           onChange={(value) => setCustomValue("images", value)}
-          value={images}
         />
       </div>
     );
