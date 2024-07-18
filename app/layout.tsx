@@ -1,4 +1,3 @@
-import "../.flow/config";
 
 import { Nunito } from "next/font/google";
 
@@ -17,8 +16,8 @@ import getCurrentUser from "./actions/getCurrentUser";
 import Wagmi from "./components/web3/wagmi";
 
 export const metadata = {
-  title: "Flowairb",
-  description: "A Web3 Rental Platform",
+  title: "Cyb3rliving",
+  description: "A Web3 Rental Platform for Digital Nomads",
 };
 
 const font = Nunito({
