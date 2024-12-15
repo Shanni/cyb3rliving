@@ -7,6 +7,7 @@ import { PlaceDetails } from "@/app/types";
 import { useLocationSearch } from "@/app/hooks/useLocationSearch";
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
+import { DEFAULT_COORDINATES } from "@/app/utils/constants";
 
 interface Props {
   value: PlaceDetails;
@@ -16,7 +17,7 @@ interface Props {
 }
 
 const LocationSearch = ({
-  value,
+  value = { address: "", coordinates: DEFAULT_COORDINATES },
   onChange,
   searchString,
   setSearchString,

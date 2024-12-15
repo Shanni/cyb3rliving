@@ -8,7 +8,7 @@ import Button from "../Button";
 interface ModalProps {
   isOpen?: boolean;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit?: () => void;
   title?: string;
   body?: React.ReactElement;
   footer?: React.ReactElement;
@@ -16,6 +16,8 @@ interface ModalProps {
   disabled?: boolean;
   secondaryAction?: () => void;
   secondaryActionLabel?: string;
+  isSubmitButton?: boolean;
+  onClick?: () => void;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -29,6 +31,8 @@ const Modal: React.FC<ModalProps> = ({
   disabled,
   secondaryAction,
   secondaryActionLabel,
+  isSubmitButton = true,
+  onClick,
 }) => {
   const [showModal, setShowModal] = useState(isOpen);
   const backdrop = useRef<HTMLDivElement>(null);
@@ -57,13 +61,17 @@ const Modal: React.FC<ModalProps> = ({
     [handleClose]
   );
 
-  const handleSubmit = useCallback(() => {
+  const handleClick = useCallback(() => {
     if (disabled) {
       return;
     }
 
-    onSubmit();
-  }, [onSubmit, disabled]);
+    if (isSubmitButton) {
+      onSubmit?.();
+    } else {
+      onClick?.();
+    }
+  }, [disabled, isSubmitButton, onSubmit, onClick]);
 
   const handleSecondaryAction = useCallback(() => {
     if (disabled || !secondaryAction) {
@@ -185,9 +193,10 @@ const Modal: React.FC<ModalProps> = ({
                     />
                   )}
                   <Button
+                    type={isSubmitButton ? "submit" : "button"}
                     disabled={disabled}
                     label={actionLabel}
-                    onClick={handleSubmit}
+                    onClick={handleClick}
                   />
                 </div>
                 {footer}

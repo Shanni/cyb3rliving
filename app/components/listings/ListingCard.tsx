@@ -91,6 +91,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
             key={data.id}
             showStatus={false}
             showIndicators={false}
+            showThumbs={false}
             renderArrowPrev={(onClickHandler, hasPrev, label) => (
               <ListingCardCarouselButton
                 direction="prev"

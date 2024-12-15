@@ -1,6 +1,6 @@
 "use client";
 
-import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { BiDollar } from "react-icons/bi";
 
 interface InputProps {
@@ -10,7 +10,7 @@ interface InputProps {
   disabled?: boolean;
   formatPrice?: boolean;
   required?: boolean;
-  register: UseFormRegister<FieldValues>;
+  register: UseFormRegister<any>;
   errors: FieldErrors;
 }
 
@@ -40,7 +40,7 @@ const Input: React.FC<InputProps> = ({
       <input
         id={id}
         disabled={disabled}
-        {...register(id, { required })}
+        {...register(id, { required, valueAsNumber: type === "number" })}
         placeholder=" "
         type={type}
         className={`
@@ -56,8 +56,8 @@ const Input: React.FC<InputProps> = ({
           disabled:opacity-70
           disabled:cursor-not-allowed
           ${formatPrice ? "pl-9" : "pl-4"}
-          ${errors[id] ? "border-rose-500" : "border-neutral-300"}
-          ${errors[id] ? "focus:border-rose-500" : "focus:border-black"}
+          ${errors[id] ? "border-red-500" : "border-neutral-300"}
+          ${errors[id] ? "focus:border-red-500" : "focus:border-black"}
         `}
       />
       <label
@@ -76,7 +76,7 @@ const Input: React.FC<InputProps> = ({
           peer-focus:scale-75
           peer-focus:-translate-y-4
           peer-focus:text-black
-          ${errors[id] ? "text-rose-500" : "text-zinc-600"}
+          ${errors[id] ? "text-red-500" : "text-zinc-600"}
         `}
       >
         {label}

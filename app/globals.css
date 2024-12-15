@@ -142,3 +142,13 @@ body,
     height: 32px;
   }
 }
+
+.filepond--drip {
+  background-color: #484a88;
+}
+
+@media (min-width: 430px) {
+  .filepond--item {
+    width: calc(50% - 0.5em);
+  }
+}

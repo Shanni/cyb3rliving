@@ -1,5 +1,4 @@
 import { Listing, Reservation, User } from "@prisma/client";
-import { ImageType } from "react-images-uploading";
 
 export type SafeListing = Omit<Listing, "createdAt"> & {
   createdAt: string;
@@ -24,10 +23,6 @@ export type SafeUser = Omit<
   emailVerified: string | null;
 };
 
-export type PreviewImageWithUrl = {
-  url: Promise<string> | string;
-} & ImageType;
-
 export type PlaceDetails = {
   address: string;
   coordinates: {
@@ -50,3 +45,22 @@ type Setters<T> = {
 };
 
 export type AddressActions = Setters<Address>;
+
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I
+) => void
+  ? I
+  : never;
+type LastOf<T> = UnionToIntersection<
+  T extends any ? () => T : never
+> extends () => infer R
+  ? R
+  : never;
+
+type Push<T extends any[], V> = [...T, V];
+
+export type TuplifyUnion<
+  T,
+  L = LastOf<T>,
+  N = [T] extends [never] ? true : false
+> = true extends N ? [] : Push<TuplifyUnion<Exclude<T, L>>, L>;
